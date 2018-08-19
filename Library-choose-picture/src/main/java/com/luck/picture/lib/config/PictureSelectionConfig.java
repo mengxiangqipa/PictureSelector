@@ -80,8 +80,8 @@ public final class PictureSelectionConfig implements Parcelable {
         cropCompressQuality = 90;
         videoMaxSecond = 0;
         videoMinSecond = 0;
-        singleFileMaxLenth=10*1024*1024L;
-        totalFileMaxLenth=10*1024*1024L;
+        singleFileMaxLenth=10*1024*1024*1024L;
+        totalFileMaxLenth=10*1024*1024*1024L;
         recordVideoSecond = 60;
         minimumCompressSize = PictureConfig.MAX_COMPRESS_SIZE;
         imageSpanCount = 4;

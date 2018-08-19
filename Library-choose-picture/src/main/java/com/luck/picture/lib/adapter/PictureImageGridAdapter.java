@@ -333,14 +333,14 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             return;
         }
         //TODO 20180819 我修改 限制文件的总大小及单个大小
-        if (!TextUtils.isEmpty(image.getPath())) {
+        if (!isChecked&&!TextUtils.isEmpty(image.getPath())) {
             File file = new File(image.getPath());
             if (file.exists()) {
                 if (file.length() > singleFileMaxLenth) {
                     String str = context.getString(R.string.picture_message_singleFile_max_lenth) + fileSize(singleFileMaxLenth);
                     ToastManage.s(context, str);
                     return;
-                } else if (selectImages.size() > 0) {
+                } else {
                     int totalFileMax=0;
                     for (int i = 0, len = selectImages.size(); i < len; i++) {
                         LocalMedia imageTemp=selectImages.get(i);
@@ -349,6 +349,7 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
                             totalFileMax+=fileT.length();
                         }
                     }
+                    totalFileMax+=file.length();
                     if (totalFileMax > totalFileMaxLenth) {
                         String str = context.getString(R.string.picture_message_totalFile_max_lenth) + fileSize(totalFileMaxLenth);
                         ToastManage.s(context, str);

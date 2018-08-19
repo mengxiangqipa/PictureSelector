@@ -220,7 +220,7 @@ public class PictureSelectionModel {
     }
 
     /**
-     * @param totalFileMaxLenth 总文件大小限制 byte
+     * @param totalFileMaxLenth 总文件大小限制 单位B  1MB=1*1024*1024
      */
     public PictureSelectionModel totalFileMaxLenth(long totalFileMaxLenth) {
         selectionConfig.totalFileMaxLenth = totalFileMaxLenth;
@@ -228,7 +228,7 @@ public class PictureSelectionModel {
     }
 
     /**
-     * @param singleFileMaxLenth 单个文件的大小限制 byte
+     * @param singleFileMaxLenth 单个文件的大小限制 单位B  1MB=1*1024*1024
      * @return
      */
     public PictureSelectionModel singleFileMaxLenth(long singleFileMaxLenth) {
