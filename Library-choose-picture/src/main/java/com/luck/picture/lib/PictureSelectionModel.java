@@ -219,7 +219,22 @@ public class PictureSelectionModel {
         return this;
     }
 
+    /**
+     * @param totalFileMaxLenth 总文件大小限制 byte
+     */
+    public PictureSelectionModel totalFileMaxLenth(long totalFileMaxLenth) {
+        selectionConfig.totalFileMaxLenth = totalFileMaxLenth;
+        return this;
+    }
 
+    /**
+     * @param singleFileMaxLenth 单个文件的大小限制 byte
+     * @return
+     */
+    public PictureSelectionModel singleFileMaxLenth(long singleFileMaxLenth) {
+        selectionConfig.singleFileMaxLenth = singleFileMaxLenth;
+        return this;
+    }
     /**
      * @param recordVideoSecond video record second
      * @return

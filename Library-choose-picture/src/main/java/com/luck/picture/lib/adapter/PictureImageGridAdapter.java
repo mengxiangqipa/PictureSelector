@@ -31,6 +31,7 @@ import com.luck.picture.lib.tools.ToastManage;
 import com.luck.picture.lib.tools.VoiceUtils;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,6 +62,10 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
     private PictureSelectionConfig config;
     private int mimeType;
     private boolean zoomAnim;
+    // 所有文件最大限制
+    private long totalFileMaxLenth;
+    // 单个文件最大限制
+    private long singleFileMaxLenth;
     /**
      * 单选图片
      */
@@ -82,6 +87,8 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.sizeMultiplier = config.sizeMultiplier;
         this.mimeType = config.mimeType;
         this.zoomAnim = config.zoomAnim;
+        this.totalFileMaxLenth = config.totalFileMaxLenth;
+        this.singleFileMaxLenth = config.singleFileMaxLenth;
         animation = OptAnimationLoader.loadAnimation(context, R.anim.modal_in);
     }
 
@@ -238,7 +245,6 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-
     @Override
     public int getItemCount() {
         return showCamera ? images.size() + 1 : images.size();
@@ -321,10 +327,35 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
         if (selectImages.size() >= maxSelectNum && !isChecked) {
             boolean eqImg = pictureType.startsWith(PictureConfig.IMAGE);
-            String str = eqImg ? context.getString(R.string.picture_message_max_num, maxSelectNum)
-                    : context.getString(R.string.picture_message_video_max_num, maxSelectNum);
+            String str = eqImg ? context.getString(R.string.picture_message_max_num, maxSelectNum+"")
+                    : context.getString(R.string.picture_message_video_max_num, maxSelectNum+"");
             ToastManage.s(context, str);
             return;
+        }
+        //TODO 20180819 我修改 限制文件的总大小及单个大小
+        if (!TextUtils.isEmpty(image.getPath())) {
+            File file = new File(image.getPath());
+            if (file.exists()) {
+                if (file.length() > singleFileMaxLenth) {
+                    String str = context.getString(R.string.picture_message_singleFile_max_lenth) + fileSize(singleFileMaxLenth);
+                    ToastManage.s(context, str);
+                    return;
+                } else if (selectImages.size() > 0) {
+                    int totalFileMax=0;
+                    for (int i = 0, len = selectImages.size(); i < len; i++) {
+                        LocalMedia imageTemp=selectImages.get(i);
+                        File fileT = new File(imageTemp.getPath());
+                        if (fileT.exists()) {
+                            totalFileMax+=fileT.length();
+                        }
+                    }
+                    if (totalFileMax > totalFileMaxLenth) {
+                        String str = context.getString(R.string.picture_message_totalFile_max_lenth) + fileSize(totalFileMaxLenth);
+                        ToastManage.s(context, str);
+                        return;
+                    }
+                }
+            }
         }
 
         if (isChecked) {
@@ -454,5 +485,12 @@ public class PictureImageGridAdapter extends RecyclerView.Adapter<RecyclerView.V
             set.setDuration(DURATION);
             set.start();
         }
+    }
+
+    public String fileSize(long size) {
+        if (size <= 0) return "0";
+        final String[] units = new String[]{"B", "kB", "MB", "GB", "TB"};
+        int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
+        return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 }
